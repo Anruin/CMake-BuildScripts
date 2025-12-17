@@ -21,7 +21,12 @@ else ()
         set(_CFLAGS "-O3 -fPIC")
     endif ()
     set(POSTGRES_INSTALL_PREFIX "/usr/local")
-    set(LIBPQ_LIBRARY "${POSTGRES_INSTALL_PREFIX}/lib/libpq.a")
+    set(LIBPQ_LIBRARY
+            "${POSTGRES_INSTALL_PREFIX}/lib/x86_64-linux-gnu/libpq.a"
+            "${POSTGRES_INSTALL_PREFIX}/lib/x86_64-linux-gnu/libpgcommon.a"
+            "${POSTGRES_INSTALL_PREFIX}/lib/x86_64-linux-gnu/libpgport.a"
+            "${POSTGRES_INSTALL_PREFIX}/lib/x86_64-linux-gnu/libpgtypes.a"
+    )
 endif ()
 
 set(POSTGRES_GIT_REPO "https://github.com/postgres/postgres.git")
