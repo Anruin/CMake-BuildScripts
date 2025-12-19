@@ -1,30 +1,28 @@
-message(STATUS "Attempting to install ninja via apt...")
-
-execute_process(
-        COMMAND apt update
-        RESULT_VARIABLE NINJA_RESULT
-        OUTPUT_VARIABLE NINJA_OUT
-        ERROR_VARIABLE NINJA_ERR
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_STRIP_TRAILING_WHITESPACE
-)
-message(STATUS "${NINJA_OUT}")
-if (NOT NINJA_RESULT EQUAL 0)
-    message(WARNING "Failed to update apt: ${NINJA_ERR}")
-endif ()
-
-execute_process(
-        COMMAND apt install -y ninja-build
-        RESULT_VARIABLE NINJA_RESULT
-        OUTPUT_VARIABLE NINJA_OUT
-        ERROR_VARIABLE NINJA_ERR
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        ERROR_STRIP_TRAILING_WHITESPACE
-)
-message(STATUS "${NINJA_OUT}")
-if (NOT NINJA_RESULT EQUAL 0)
-    message(WARNING "Failed to install ninja: ${NINJA_ERR}")
-endif ()
-
+# Check ninja and install if missing
 find_program(NINJA_EXECUTABLE NAMES ninja ninja-build)
-message(STATUS "ninja: ${NINJA_EXECUTABLE}")
+
+if(NOT NINJA_EXECUTABLE)
+    message(STATUS "Ninja not found. Attempting to install via apt...")
+
+    execute_process(
+            COMMAND sudo apt update
+            RESULT_VARIABLE UPDATE_RESULT
+            ERROR_QUIET
+    )
+
+    execute_process(
+            COMMAND sudo apt install -y ninja-build
+            RESULT_VARIABLE INSTALL_RESULT
+            OUTPUT_VARIABLE INSTALL_OUT
+            ERROR_VARIABLE INSTALL_ERR
+    )
+
+    if(INSTALL_RESULT EQUAL 0)
+        message(STATUS "Ninja installed successfully.")
+        find_program(NINJA_EXECUTABLE NAMES ninja ninja-build)
+    else()
+        message(WARNING "Failed to install ninja. Error: ${INSTALL_ERR}")
+    endif()
+else()
+    message(STATUS "Ninja already installed: ${NINJA_EXECUTABLE}")
+endif()
